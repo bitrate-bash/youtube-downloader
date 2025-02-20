@@ -19,7 +19,7 @@ A Python script to download multiple YouTube videos simultaneously using yt-dlp.
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/youtube-downloader.git
+git clone https://github.com/bitrate-bash/youtube-downloader.git
 cd youtube-downloader
 ```
 
@@ -47,7 +47,7 @@ python youtube_downloader.py
 
 ## Output
 
-The downloaded videos will be saved in the `/Users/sahillulla/youtube-downloader/output` directory with their original titles.
+The downloaded videos will be saved in the `output` directory with their original titles.
 
 ## Error Handling
 
