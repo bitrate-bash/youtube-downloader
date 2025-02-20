@@ -11,19 +11,19 @@ class YouTubeDownloaderGUI:
         ctk.set_appearance_mode("system")
         ctk.set_default_color_theme("blue")
 
-        # Font configurations
+        # Create main window first
+        self.window = ctk.CTk()
+        self.window.title("YouTube Video Downloader")
+        self.window.geometry("1000x700")
+        self.window.minsize(900, 600)
+
+        # Font configurations - after window creation
         self.FONT_FAMILY = "IBM Plex Mono"
         self.TITLE_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=24, weight="bold")
         self.HEADING_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=16, weight="bold")
         self.BUTTON_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=13)
         self.TEXT_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=12)
         self.STATUS_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=11)
-
-        # Create main window
-        self.window = ctk.CTk()
-        self.window.title("YouTube Video Downloader")
-        self.window.geometry("1000x700")
-        self.window.minsize(900, 600)
 
         # Configure grid layout
         self.window.grid_rowconfigure(0, weight=1)
@@ -157,6 +157,9 @@ class YouTubeDownloaderGUI:
 
         # Load saved settings
         self.load_settings()
+
+        # Set initial theme
+        self.appearance_mode_menu.set("System")
 
     def load_settings(self):
         """Load saved settings from file."""
