@@ -15,120 +15,108 @@ class YouTubeDownloaderGUI:
         # Create main window first
         self.window = ctk.CTk()
         self.window.title("YouTube Video Downloader")
-        self.window.geometry("1200x800")
-        self.window.minsize(1000, 700)
-
-        # Custom colors
-        self.COLORS = {
-            "accent": "#FF0000",      # YouTube Red
-            "accent_hover": "#CC0000", # Darker Red
-            "success": "#00CC00",     # Green
-            "warning": "#FFA500",     # Orange
-            "error": "#FF0000",       # Red
-            "separator": "#333333"    # Dark Gray
-        }
+        self.window.geometry("1000x700")
+        self.window.minsize(900, 600)
 
         # Check available fonts and set font family
         available_fonts = list(tk.font.families())
         self.FONT_FAMILY = "IBM Plex Mono" if "IBM Plex Mono" in available_fonts else None
         if not self.FONT_FAMILY:
+            # Try to find a suitable monospace font
             for font in ["Menlo", "Monaco", "Consolas", "Courier New"]:
                 if font in available_fonts:
                     self.FONT_FAMILY = font
                     break
             if not self.FONT_FAMILY:
-                self.FONT_FAMILY = "Courier"
+                self.FONT_FAMILY = "Courier"  # Fallback to system default monospace
 
-        # Font configurations
-        self.TITLE_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=32, weight="bold")
-        self.HEADING_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=18, weight="bold")
-        self.BUTTON_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=14)
-        self.TEXT_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=13)
-        self.STATUS_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=12)
+        # Font configurations - after window creation
+        self.TITLE_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=24, weight="bold")
+        self.HEADING_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=16, weight="bold")
+        self.BUTTON_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=13)
+        self.TEXT_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=12)
+        self.STATUS_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=11)
 
         # Configure grid layout
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(1, weight=1)
 
-        # Create sidebar frame
-        self.sidebar = ctk.CTkFrame(self.window, width=300, corner_radius=20)
-        self.sidebar.grid(row=0, column=0, sticky="nsew", padx=(30, 15), pady=30)
+        # Create sidebar frame with gradient effect
+        self.sidebar = ctk.CTkFrame(self.window, width=250, corner_radius=15)
+        self.sidebar.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
         self.sidebar.grid_rowconfigure(7, weight=1)
-        self.sidebar.grid_propagate(False)  # Prevent sidebar from shrinking
 
         # Create main frame
-        self.main_frame = ctk.CTkFrame(self.window, corner_radius=20)
-        self.main_frame.grid(row=0, column=1, sticky="nsew", padx=(15, 30), pady=30)
+        self.main_frame = ctk.CTkFrame(self.window, corner_radius=15)
+        self.main_frame.grid(row=0, column=1, sticky="nsew", padx=(10, 20), pady=20)
         self.main_frame.grid_rowconfigure(1, weight=1)
         self.main_frame.grid_columnconfigure(0, weight=1)
 
-        # Add logo/title to sidebar
+        # Add logo/title to sidebar with enhanced styling
         self.logo_label = ctk.CTkLabel(
             self.sidebar, 
-            text="YouTube\nDownloader",
+            text="YouTube\nDownloader", 
             font=self.TITLE_FONT,
-            text_color=self.COLORS["accent"]
+            pady=20
         )
-        self.logo_label.grid(row=0, column=0, padx=30, pady=(40, 30))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(30, 20))
 
         # Separator after title
-        self.separator1 = ctk.CTkFrame(self.sidebar, height=2, fg_color=self.COLORS["separator"])
-        self.separator1.grid(row=1, column=0, sticky="ew", padx=30, pady=(0, 30))
+        self.separator1 = ctk.CTkFrame(self.sidebar, height=2)
+        self.separator1.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 20))
 
-        # Add buttons to sidebar
+        # Add buttons to sidebar with consistent styling
         self.add_url_button = ctk.CTkButton(
             self.sidebar,
             text="Paste URLs",
             command=self.add_url,
             font=self.BUTTON_FONT,
-            height=45,
-            corner_radius=10,
-            fg_color=self.COLORS["accent"],
-            hover_color=self.COLORS["accent_hover"]
+            height=40,
+            corner_radius=8
         )
-        self.add_url_button.grid(row=2, column=0, padx=30, pady=10)
+        self.add_url_button.grid(row=2, column=0, padx=20, pady=10)
 
         self.clear_button = ctk.CTkButton(
             self.sidebar,
             text="Clear All",
             command=self.clear_urls,
             font=self.BUTTON_FONT,
-            height=45,
-            corner_radius=10
+            height=40,
+            corner_radius=8
         )
-        self.clear_button.grid(row=3, column=0, padx=30, pady=10)
+        self.clear_button.grid(row=3, column=0, padx=20, pady=10)
 
         self.output_dir_button = ctk.CTkButton(
             self.sidebar,
             text="Select Output Directory",
             command=self.select_output_dir,
             font=self.BUTTON_FONT,
-            height=45,
-            corner_radius=10
+            height=40,
+            corner_radius=8
         )
-        self.output_dir_button.grid(row=4, column=0, padx=30, pady=10)
+        self.output_dir_button.grid(row=4, column=0, padx=20, pady=10)
 
         # Separator before theme selector
-        self.separator2 = ctk.CTkFrame(self.sidebar, height=2, fg_color=self.COLORS["separator"])
-        self.separator2.grid(row=5, column=0, sticky="ew", padx=30, pady=30)
+        self.separator2 = ctk.CTkFrame(self.sidebar, height=2)
+        self.separator2.grid(row=5, column=0, sticky="ew", padx=20, pady=20)
 
         # Theme selector with label
         self.theme_label = ctk.CTkLabel(
             self.sidebar,
-            text="APPEARANCE",
+            text="Theme",
             font=self.HEADING_FONT
         )
-        self.theme_label.grid(row=6, column=0, padx=30, pady=(0, 10))
+        self.theme_label.grid(row=6, column=0, padx=20, pady=(0, 5))
 
         self.appearance_mode_menu = ctk.CTkOptionMenu(
             self.sidebar,
             values=["Light", "Dark", "System"],
             command=self.change_appearance_mode,
             font=self.BUTTON_FONT,
-            height=40,
-            corner_radius=10
+            height=35,
+            corner_radius=8
         )
-        self.appearance_mode_menu.grid(row=7, column=0, padx=30, pady=10)
+        self.appearance_mode_menu.grid(row=7, column=0, padx=20, pady=10)
 
         # Download button at bottom of sidebar
         self.download_button = ctk.CTkButton(
@@ -136,50 +124,42 @@ class YouTubeDownloaderGUI:
             text="Start Download",
             command=self.start_download,
             font=self.HEADING_FONT,
-            height=60,
-            corner_radius=10,
-            fg_color=self.COLORS["accent"],
-            hover_color=self.COLORS["accent_hover"]
+            height=50,
+            corner_radius=8
         )
-        self.download_button.grid(row=8, column=0, padx=30, pady=(30, 40))
+        self.download_button.grid(row=8, column=0, padx=20, pady=(20, 30))
 
-        # Main area title
+        # Main area components with enhanced styling
         self.title_label = ctk.CTkLabel(
             self.main_frame,
-            text="Enter YouTube URLs",
+            text="YouTube URLs",
             font=self.HEADING_FONT
         )
-        self.title_label.grid(row=0, column=0, padx=30, pady=(30, 20))
+        self.title_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        # URL textbox
+        # URL textbox with custom styling
         self.url_textbox = ctk.CTkTextbox(
             self.main_frame,
             font=self.TEXT_FONT,
-            corner_radius=10,
-            border_spacing=15,
-            height=400
+            corner_radius=8,
+            border_spacing=10
         )
-        self.url_textbox.grid(row=1, column=0, padx=30, pady=(0, 30), sticky="nsew")
+        self.url_textbox.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
 
-        # Status area
-        self.status_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, height=100)
-        self.status_frame.grid(row=2, column=0, padx=30, pady=(0, 30), sticky="ew")
+        # Status area with enhanced visual feedback
+        self.status_frame = ctk.CTkFrame(self.main_frame, corner_radius=8)
+        self.status_frame.grid(row=2, column=0, padx=20, pady=(0, 20), sticky="ew")
         self.status_frame.grid_columnconfigure(0, weight=1)
-        self.status_frame.grid_propagate(False)  # Keep constant height
 
         self.status_label = ctk.CTkLabel(
             self.status_frame,
             text="Ready to download",
             font=self.STATUS_FONT
         )
-        self.status_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.status_label.grid(row=0, column=0, padx=20, pady=(15, 5))
 
-        self.progress_bar = ctk.CTkProgressBar(
-            self.status_frame,
-            height=15,
-            corner_radius=5
-        )
-        self.progress_bar.grid(row=1, column=0, padx=20, pady=(10, 20), sticky="ew")
+        self.progress_bar = ctk.CTkProgressBar(self.status_frame)
+        self.progress_bar.grid(row=1, column=0, padx=20, pady=(5, 15), sticky="ew")
         self.progress_bar.set(0)
 
         # Initialize variables
@@ -245,15 +225,7 @@ class YouTubeDownloaderGUI:
         ctk.set_appearance_mode(new_appearance_mode.lower())
 
     def update_status(self, message: str):
-        """Update the status label with colored indicators."""
-        if "✓" in message or "✅" in message:
-            self.status_label.configure(text_color=self.COLORS["success"])
-        elif "⚠" in message:
-            self.status_label.configure(text_color=self.COLORS["warning"])
-        elif "❌" in message:
-            self.status_label.configure(text_color=self.COLORS["error"])
-        else:
-            self.status_label.configure(text_color="")
+        """Update the status label."""
         self.status_label.configure(text=message)
 
     def update_progress(self, value: float):

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="mdi mdi-youtube"></i>
+                <h1>YouTube<br>Downloader</h1>
+            </div>
+            
+            <div class="sidebar-content">
+                <button id="pasteButton" class="btn primary">
+                    <i class="mdi mdi-content-paste"></i>
+                    Paste URLs
+                </button>
+                
+                <button id="clearButton" class="btn secondary">
+                    <i class="mdi mdi-delete"></i>
+                    Clear All
+                </button>
+                
+                <div class="theme-selector">
+                    <label>Theme</label>
+                    <select id="themeSelect">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="system">System</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="downloadButton" class="btn primary large">
+                    <i class="mdi mdi-download"></i>
+                    Start Download
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="url-input-section">
+                <h2>YouTube URLs</h2>
+                <div class="url-input-container">
+                    <textarea id="urlInput" placeholder="Enter YouTube URLs (one per line)"></textarea>
+                </div>
+            </div>
+
+            <div class="downloads-section">
+                <h2>Downloads</h2>
+                <div id="downloadsList" class="downloads-list">
+                    <!-- Downloads will be inserted here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Status Toast -->
+    <div id="statusToast" class="toast hidden">
+        <span id="statusMessage"></span>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 
