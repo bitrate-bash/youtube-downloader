@@ -31,8 +31,14 @@ env/
 *.swp
 *.swo
 
-# Output directory
+# Project specific
 output/
+input/*
+!input/sample_urls.txt
 
 # Logs
-*.log 
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db 

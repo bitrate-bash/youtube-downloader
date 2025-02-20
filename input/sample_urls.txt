@@ -1,0 +1,7 @@
+# Add your YouTube URLs below (one per line)
+# Lines starting with # are ignored
+# Empty lines are ignored
+# Example:
+https://www.youtube.com/watch?v=example1
+https://www.youtube.com/watch?v=example2
+https://youtu.be/example3 
