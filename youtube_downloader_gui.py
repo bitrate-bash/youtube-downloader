@@ -4,6 +4,7 @@ from youtube_downloader import download_video
 import threading
 from typing import List
 import json
+import tkinter as tk
 
 class YouTubeDownloaderGUI:
     def __init__(self):
@@ -17,8 +18,19 @@ class YouTubeDownloaderGUI:
         self.window.geometry("1000x700")
         self.window.minsize(900, 600)
 
+        # Check available fonts and set font family
+        available_fonts = list(tk.font.families())
+        self.FONT_FAMILY = "IBM Plex Mono" if "IBM Plex Mono" in available_fonts else None
+        if not self.FONT_FAMILY:
+            # Try to find a suitable monospace font
+            for font in ["Menlo", "Monaco", "Consolas", "Courier New"]:
+                if font in available_fonts:
+                    self.FONT_FAMILY = font
+                    break
+            if not self.FONT_FAMILY:
+                self.FONT_FAMILY = "Courier"  # Fallback to system default monospace
+
         # Font configurations - after window creation
-        self.FONT_FAMILY = "IBM Plex Mono"
         self.TITLE_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=24, weight="bold")
         self.HEADING_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=16, weight="bold")
         self.BUTTON_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=13)
@@ -271,5 +283,8 @@ class YouTubeDownloaderGUI:
         self.window.mainloop()
 
 if __name__ == "__main__":
-    app = YouTubeDownloaderGUI()
-    app.run() 
+    try:
+        app = YouTubeDownloaderGUI()
+        app.run()
+    except Exception as e:
+        print(f"Error starting application: {e}") 
