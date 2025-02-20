@@ -8,81 +8,146 @@ import json
 class YouTubeDownloaderGUI:
     def __init__(self):
         # Configure appearance
-        ctk.set_appearance_mode("system")  # Modes: system (default), light, dark
-        ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+        ctk.set_appearance_mode("system")
+        ctk.set_default_color_theme("blue")
+
+        # Font configurations
+        self.FONT_FAMILY = "IBM Plex Mono"
+        self.TITLE_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=24, weight="bold")
+        self.HEADING_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=16, weight="bold")
+        self.BUTTON_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=13)
+        self.TEXT_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=12)
+        self.STATUS_FONT = ctk.CTkFont(family=self.FONT_FAMILY, size=11)
 
         # Create main window
         self.window = ctk.CTk()
         self.window.title("YouTube Video Downloader")
-        self.window.geometry("800x600")
-        self.window.minsize(800, 600)
+        self.window.geometry("1000x700")
+        self.window.minsize(900, 600)
 
         # Configure grid layout
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_columnconfigure(1, weight=1)
 
-        # Create sidebar frame
-        self.sidebar = ctk.CTkFrame(self.window, width=200, corner_radius=0)
-        self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_rowconfigure(4, weight=1)
+        # Create sidebar frame with gradient effect
+        self.sidebar = ctk.CTkFrame(self.window, width=250, corner_radius=15)
+        self.sidebar.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
+        self.sidebar.grid_rowconfigure(7, weight=1)
 
         # Create main frame
-        self.main_frame = ctk.CTkFrame(self.window)
-        self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
+        self.main_frame = ctk.CTkFrame(self.window, corner_radius=15)
+        self.main_frame.grid(row=0, column=1, sticky="nsew", padx=(10, 20), pady=20)
         self.main_frame.grid_rowconfigure(1, weight=1)
         self.main_frame.grid_columnconfigure(0, weight=1)
 
-        # Add logo/title to sidebar
-        self.logo_label = ctk.CTkLabel(self.sidebar, text="YouTube\nDownloader", 
-                                     font=ctk.CTkFont(size=20, weight="bold"))
-        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        # Add logo/title to sidebar with enhanced styling
+        self.logo_label = ctk.CTkLabel(
+            self.sidebar, 
+            text="YouTube\nDownloader", 
+            font=self.TITLE_FONT,
+            pady=20
+        )
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(30, 20))
 
-        # Add buttons to sidebar
-        self.add_url_button = ctk.CTkButton(self.sidebar, text="Add URLs", 
-                                          command=self.add_url)
-        self.add_url_button.grid(row=1, column=0, padx=20, pady=10)
+        # Separator after title
+        self.separator1 = ctk.CTkFrame(self.sidebar, height=2)
+        self.separator1.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 20))
 
-        self.clear_button = ctk.CTkButton(self.sidebar, text="Clear All", 
-                                        command=self.clear_urls)
-        self.clear_button.grid(row=2, column=0, padx=20, pady=10)
+        # Add buttons to sidebar with consistent styling
+        self.add_url_button = ctk.CTkButton(
+            self.sidebar,
+            text="Paste URLs",
+            command=self.add_url,
+            font=self.BUTTON_FONT,
+            height=40,
+            corner_radius=8
+        )
+        self.add_url_button.grid(row=2, column=0, padx=20, pady=10)
 
-        # Add output directory selector
-        self.output_dir_button = ctk.CTkButton(self.sidebar, text="Select Output Directory", 
-                                             command=self.select_output_dir)
-        self.output_dir_button.grid(row=3, column=0, padx=20, pady=10)
+        self.clear_button = ctk.CTkButton(
+            self.sidebar,
+            text="Clear All",
+            command=self.clear_urls,
+            font=self.BUTTON_FONT,
+            height=40,
+            corner_radius=8
+        )
+        self.clear_button.grid(row=3, column=0, padx=20, pady=10)
 
-        # Add appearance mode selector
-        self.appearance_mode_menu = ctk.CTkOptionMenu(self.sidebar, values=["Light", "Dark", "System"],
-                                                    command=self.change_appearance_mode)
-        self.appearance_mode_menu.grid(row=5, column=0, padx=20, pady=(10, 10))
+        self.output_dir_button = ctk.CTkButton(
+            self.sidebar,
+            text="Select Output Directory",
+            command=self.select_output_dir,
+            font=self.BUTTON_FONT,
+            height=40,
+            corner_radius=8
+        )
+        self.output_dir_button.grid(row=4, column=0, padx=20, pady=10)
 
-        # Add download button
-        self.download_button = ctk.CTkButton(self.sidebar, text="Start Download",
-                                           command=self.start_download,
-                                           font=ctk.CTkFont(size=15, weight="bold"))
-        self.download_button.grid(row=6, column=0, padx=20, pady=(10, 20))
+        # Separator before theme selector
+        self.separator2 = ctk.CTkFrame(self.sidebar, height=2)
+        self.separator2.grid(row=5, column=0, sticky="ew", padx=20, pady=20)
 
-        # Create main area title
-        self.title_label = ctk.CTkLabel(self.main_frame, text="YouTube URLs", 
-                                      font=ctk.CTkFont(size=15, weight="bold"))
-        self.title_label.grid(row=0, column=0, padx=10, pady=(0, 10))
+        # Theme selector with label
+        self.theme_label = ctk.CTkLabel(
+            self.sidebar,
+            text="Theme",
+            font=self.HEADING_FONT
+        )
+        self.theme_label.grid(row=6, column=0, padx=20, pady=(0, 5))
 
-        # Create URL list
-        self.url_textbox = ctk.CTkTextbox(self.main_frame, width=400)
-        self.url_textbox.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="nsew")
+        self.appearance_mode_menu = ctk.CTkOptionMenu(
+            self.sidebar,
+            values=["Light", "Dark", "System"],
+            command=self.change_appearance_mode,
+            font=self.BUTTON_FONT,
+            height=35,
+            corner_radius=8
+        )
+        self.appearance_mode_menu.grid(row=7, column=0, padx=20, pady=10)
 
-        # Create status area
-        self.status_frame = ctk.CTkFrame(self.main_frame)
-        self.status_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="ew")
+        # Download button at bottom of sidebar
+        self.download_button = ctk.CTkButton(
+            self.sidebar,
+            text="Start Download",
+            command=self.start_download,
+            font=self.HEADING_FONT,
+            height=50,
+            corner_radius=8
+        )
+        self.download_button.grid(row=8, column=0, padx=20, pady=(20, 30))
+
+        # Main area components with enhanced styling
+        self.title_label = ctk.CTkLabel(
+            self.main_frame,
+            text="YouTube URLs",
+            font=self.HEADING_FONT
+        )
+        self.title_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        # URL textbox with custom styling
+        self.url_textbox = ctk.CTkTextbox(
+            self.main_frame,
+            font=self.TEXT_FONT,
+            corner_radius=8,
+            border_spacing=10
+        )
+        self.url_textbox.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
+
+        # Status area with enhanced visual feedback
+        self.status_frame = ctk.CTkFrame(self.main_frame, corner_radius=8)
+        self.status_frame.grid(row=2, column=0, padx=20, pady=(0, 20), sticky="ew")
         self.status_frame.grid_columnconfigure(0, weight=1)
 
-        self.status_label = ctk.CTkLabel(self.status_frame, text="Ready", 
-                                       font=ctk.CTkFont(size=12))
-        self.status_label.grid(row=0, column=0, padx=10, pady=10)
+        self.status_label = ctk.CTkLabel(
+            self.status_frame,
+            text="Ready to download",
+            font=self.STATUS_FONT
+        )
+        self.status_label.grid(row=0, column=0, padx=20, pady=(15, 5))
 
-        # Progress bar
         self.progress_bar = ctk.CTkProgressBar(self.status_frame)
-        self.progress_bar.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        self.progress_bar.grid(row=1, column=0, padx=20, pady=(5, 15), sticky="ew")
         self.progress_bar.set(0)
 
         # Initialize variables
@@ -116,18 +181,21 @@ class YouTubeDownloaderGUI:
 
     def add_url(self):
         """Add URLs from clipboard."""
-        clipboard = self.window.clipboard_get()
-        if clipboard:
-            current_text = self.url_textbox.get("1.0", "end-1c")
-            if current_text:
-                self.url_textbox.insert("end", "\n")
-            self.url_textbox.insert("end", clipboard)
-        self.update_status("URL added from clipboard")
+        try:
+            clipboard = self.window.clipboard_get()
+            if clipboard:
+                current_text = self.url_textbox.get("1.0", "end-1c")
+                if current_text and not current_text.endswith('\n'):
+                    self.url_textbox.insert("end", "\n")
+                self.url_textbox.insert("end", clipboard)
+                self.update_status("✓ URL added from clipboard")
+        except Exception:
+            self.update_status("⚠ No valid URL in clipboard")
 
     def clear_urls(self):
         """Clear all URLs from the textbox."""
         self.url_textbox.delete("1.0", "end")
-        self.update_status("URLs cleared")
+        self.update_status("✓ URLs cleared")
 
     def select_output_dir(self):
         """Open directory selector dialog."""
@@ -135,7 +203,7 @@ class YouTubeDownloaderGUI:
         if directory:
             self.output_directory = directory
             self.save_settings()
-            self.update_status(f"Output directory set to: {directory}")
+            self.update_status(f"✓ Output directory set: {os.path.basename(directory)}")
 
     def change_appearance_mode(self, new_appearance_mode: str):
         """Change the app's appearance mode."""
@@ -152,37 +220,34 @@ class YouTubeDownloaderGUI:
     def download_videos(self):
         """Download all videos in the list."""
         try:
-            # Get URLs from textbox
             urls = [url.strip() for url in self.url_textbox.get("1.0", "end-1c").split('\n') if url.strip()]
             total_urls = len(urls)
             
             if not total_urls:
-                self.update_status("No URLs to download")
+                self.update_status("⚠ No URLs to download")
                 return
 
-            # Create output directory if it doesn't exist
             if not os.path.exists(self.output_directory):
                 os.makedirs(self.output_directory)
 
-            # Download each video
             for i, url in enumerate(urls, 1):
                 if not self.is_downloading:
                     break
                 
-                self.update_status(f"Downloading video {i}/{total_urls}")
+                self.update_status(f"⏳ Downloading video {i}/{total_urls}")
                 self.update_progress(i / total_urls)
                 
                 success = download_video(url, self.output_directory)
                 if not success:
-                    self.update_status(f"Error downloading: {url}")
+                    self.update_status(f"❌ Error downloading: {url}")
 
             if self.is_downloading:
-                self.update_status("All downloads completed!")
+                self.update_status("✅ All downloads completed!")
             else:
-                self.update_status("Downloads cancelled")
+                self.update_status("⏹ Downloads cancelled")
                 
         except Exception as e:
-            self.update_status(f"Error: {str(e)}")
+            self.update_status(f"❌ Error: {str(e)}")
         finally:
             self.is_downloading = False
             self.download_button.configure(text="Start Download")
@@ -193,7 +258,6 @@ class YouTubeDownloaderGUI:
         if not self.is_downloading:
             self.is_downloading = True
             self.download_button.configure(text="Stop Download")
-            # Start download in a separate thread
             threading.Thread(target=self.download_videos, daemon=True).start()
         else:
             self.is_downloading = False
